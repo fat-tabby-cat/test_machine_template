@@ -1,4 +1,4 @@
-#%%
+#for more detail please see https://blogs.slat.org/node/1034
 import time
 import requests
 from bs4 import BeautifulSoup
