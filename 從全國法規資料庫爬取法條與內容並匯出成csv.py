@@ -1,4 +1,5 @@
 #for more detail please see https://blogs.slat.org/node/1034
+#請遵守合理使用原則，勿ping爆別人伺服器以免觸法
 import time
 import requests
 from bs4 import BeautifulSoup
