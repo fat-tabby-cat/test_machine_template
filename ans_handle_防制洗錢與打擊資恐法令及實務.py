@@ -5,6 +5,7 @@ Created on Mon Jun 30 16:58:14 2025
 
 @author: fattabby
 本解答處理程式適用於防制洗錢與打擊資恐法令及實務（適合自動化處理）的已公佈解答
+請尊重著作權，僅於合法範圍內使用
 """
 import pandas as pd
 import os
