@@ -69,7 +69,7 @@ import contextlib
 database=database.sort_values(by=['source','index'],ascending=[False,True])
 #https://www.delftstack.com/zh-tw/howto/python/python-output-to-file/
 
-file_path = "tougu_exam_print_short.txt"
+file_path = "terror_print_short.txt"
 with open(file_path, "w") as o:
     with contextlib.redirect_stdout(o):
         for i in database.index:            
@@ -83,7 +83,7 @@ with open(file_path, "w") as o:
     #print(lawfile["Counts"])
     #print(lawfile["Text"])
 
-file_path = "tougu_exam_print_long.txt"
+file_path = "terror_print_long.txt"
 with open(file_path, "w") as o:
     with contextlib.redirect_stdout(o):
         for i in database.index:
@@ -126,13 +126,15 @@ testincorrect=testincorrect.drop_duplicates(subset=["pid"])
 #testincorrect=testincorrect[(testincorrect["source"].str.contains("實務"))]
 #%%
 
-file_path = "tougu_exam_print_incorrects.txt"
+file_path = "terror_print_incorrects.txt"
 with open(file_path, "w") as o:
     with contextlib.redirect_stdout(o):
         for i in testincorrect.pid:
             #print(i)
             print(database["handle1"][i][0])
-            print("答案：",database["correct_text"][i])
+            for j in str(database["answers"][i]):
+                print("答案：",func(j))
+            #print("答案：",database["correct_text"][i])
             if database["desnull"][i]==False:
                 print("解析：",database["help"][i])
             print("")
