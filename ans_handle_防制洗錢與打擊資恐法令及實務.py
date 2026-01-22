@@ -148,15 +148,84 @@ for i in file_names:
 output["source"]=output["source"].astype(str)+output["questions"].astype(str) 
 output_merge=pd.concat([output_merge,output])
 output.to_csv(os.path.abspath(os.path.join(folder_path, os.pardir))+"/answer_{}.csv".format(host))      
+#%%
+'''
+Type: IAFI（犯防中心）
+(先略過2列)
+（1-80題）防制洗錢與打擊資恐法令及實務
+'''
+host="iafi"
+if os.name=="posix":
+    print("you are using Linux or Mac")
+    folder_path = "/home/{}/Nextcloud/terror/ans/type_{}".format(os.getlogin(),host)
+else:
+    print("you are using Windows")
+    folder_path = 'C:/Users/{}/Nextcloud/terror/ans/type_{}'.format(os.getlogin(),host)
+try:
+    os.chdir(folder_path)
+except Exception:
+    os.makedirs(folder_path, exist_ok=True)
+    os.chdir(folder_path)
+
+file_names = os.listdir(folder_path)    
+extension = 'txt'
+#os.chdir(pathname)
+file_names = glob.glob('*.{}'.format(extension))
+file_names=sorted(file_names)
+subject="防制洗錢與打擊資恐法令及實務"
+
+def texthandle(input_file):
+    with open(input_file) as file:        
+        whole=[]  
+        for line in file:
+            if "【" in line:
+                whole.append(line)                             
+        df=pd.DataFrame(whole)
+        df.to_csv(input_file[0:5]+"_processed"+".csv", index=False)
+             
+for i in file_names:
+    texthandle(i)
+'''
+因為檔案狀況不適合全自動化處理，故部份操作會改在LibreOffice Calc上進行後轉存
+'''
+#%%for iafi import only
+output_merge=pd.DataFrame([],columns=["source","questions","answers"])    
+file_names = os.listdir(folder_path)    
+extension = 'csv'
+#os.chdir(pathname)
+file_names = glob.glob('*.{}'.format(extension))
+file_names=sorted(file_names)
+for i in file_names:
+    output=pd.read_csv(i)
+    output_merge=pd.concat([output_merge,output])
+
 #%%combine answers to database
-#database請自建
+'''
+從犯防中心來的檔案處理後必須人工校對，故另存新檔後用LibreOffice編輯回原題庫檔案
+'''
 database=pd.read_csv("/home/fattabby/Nextcloud/terror/database_terror.csv",index_col=0)
+'''
+#database請自建，相關參數如下：
+Index(['index', 'questions_left', 'source', 'questions_right', 'answers',
+       'help'],
+      dtype='object')
+其中下面使用的串接key格式：民國年度+第幾次測驗+科目（"防制洗錢與打擊資恐法令及實務"）+題號
+如：11404防制洗錢與打擊資恐法令及實務78
+
+'''
 #將步驟以code標準化
-database["index"]=database["index"]+1 #因python的index起始值為0，故要+1才能做題目編號的整併
+if host != "iafi":
+    #print("jack in the box")
+    database["index"]=database["index"]+1 #因python的index起始值為0，故要+1才能做題目編號的整併    
+else:
+    print("skip [index+=1] procedure")
 #取source的若干個字母+index
 #database["key"]=database["source"].astype(str).str[0:3]+"0"+database["source"].astype(str).str[5]+database["source"].astype(str).str[12:16]+database["index"].astype(str)
 database["key"]=database["source"].astype(str).str[0:3]+"0"+database["source"].astype(str).str[5]+subject+database["index"].astype(str)
 answers=output_merge
 merged_df=database.set_index("key").join(answers.set_index("source"), how="left", lsuffix='_left', rsuffix='_right')
 merged_df=merged_df.reset_index(drop=True)
-merged_df.to_csv("database_terror.csv")
+if host != "iafi":
+    merged_df.to_csv("database_terror.csv")
+else:
+    merged_df.to_csv("database_terror_iafi.csv")
