@@ -90,6 +90,7 @@ print("本次考試總得分為：", total_score)
 t = time.time()
 t1 = time.localtime(t)
 testinput=testinput.sort_values("pid")
-testinput.to_csv("考試結果_{}_{}.csv".format(subject,str(t1.tm_year)+str(t1.tm_mon)+str(t1.tm_mday)+"_"+str(t1.tm_hour)+str(t1.tm_min)),encoding="utf-8")
+testinput.to_csv("考試結果_{}_{}.csv".format(subject,str(t1.tm_year)+str(t1.tm_mon).zfill(2)+str(t1.tm_mday).zfill(2)+"_"+str(t1.tm_hour).zfill(2)+str(t1.tm_min).zfill(2)),encoding="utf-8")
 testinput_incorrect=testinput[(testinput["correctcheck"]==False)]
-testinput_incorrect.to_csv("答錯題目_{}_{}.csv".format(subject,str(t1.tm_year)+str(t1.tm_mon)+str(t1.tm_mday)+"_"+str(t1.tm_hour)+str(t1.tm_min)),encoding="utf-8")
+testinput_incorrect.to_csv("答錯題目_{}_{}.csv".format(subject,str(t1.tm_year)+str(t1.tm_mon).zfill(2)+str(t1.tm_mday).zfill(2)+"_"+str(t1.tm_hour).zfill(2)+str(t1.tm_min).zfill(2)),encoding="utf-8")
+
