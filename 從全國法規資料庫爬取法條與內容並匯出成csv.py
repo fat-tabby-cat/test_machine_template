@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Created on Fri Feb 28 18:44:05 2025
@@ -52,14 +53,13 @@ database=pd.concat([lawbase,database])
 #database.to_csv("{}.csv".format(filename))
 #%%if you want to save to 
 database.to_csv("{}.csv".format(filename),index=False)
-import pandas as pd
 #%%
 database2=database.groupby("actname")
 file_path = "lawprint_scanmode.txt"
 with open(file_path, "w") as o:
     with contextlib.redirect_stdout(o):
-        for i in database.actname.unique().tolist():  
+        for i in sorted(database.actname.unique().tolist()):  
             df=database2.get_group(i)
             print("法條 ",i)
             for j in range(df.shape[0]):
-                print(df.title.iloc[j], df.article.iloc[j])   
+                print(df.title.iloc[j], df.article.iloc[j])                
