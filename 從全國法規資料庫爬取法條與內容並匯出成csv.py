@@ -1,12 +1,18 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Feb 28 18:44:05 2025
+
+@author: fattabby
+"""
 #for more detail please see https://blogs.slat.org/node/1034
 #請遵守合理使用原則，勿ping爆別人伺服器以免觸法
-import time
+#import time
 import requests
 from bs4 import BeautifulSoup
-from urllib.parse import unquote
+#from urllib.parse import unquote
 import pandas as pd
+import contextlib
 database=pd.DataFrame([],columns=["actname","title","article"]) 
- 
 #%%
 #程式會自動抓法條標題，這樣就無須手動打
 url = input('請輸入全國法規資料庫網址：')
@@ -29,7 +35,7 @@ def crawl_questions(url):
     articles=soup.find_all('div', class_='law-article')    
     
     #titles_output = []
-    lawbase=pd.DataFrame([],columns=["actname","title","blank1","blank2","blank3","blank4","blank5","article"])
+    lawbase=pd.DataFrame([],columns=["actname","title","article"])
     #articles_output = []
     for i,j in zip(titles,articles):
         exports=pd.DataFrame([])
@@ -46,3 +52,14 @@ database=pd.concat([lawbase,database])
 #database.to_csv("{}.csv".format(filename))
 #%%if you want to save to 
 database.to_csv("{}.csv".format(filename),index=False)
+import pandas as pd
+#%%
+database2=database.groupby("actname")
+file_path = "lawprint_scanmode.txt"
+with open(file_path, "w") as o:
+    with contextlib.redirect_stdout(o):
+        for i in database.actname.unique().tolist():  
+            df=database2.get_group(i)
+            print("法條 ",i)
+            for j in range(df.shape[0]):
+                print(df.title.iloc[j], df.article.iloc[j])   
